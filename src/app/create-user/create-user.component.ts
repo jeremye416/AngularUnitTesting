@@ -11,6 +11,7 @@ import { ApiService } from '../services/api/api.service';
   styleUrls: ['./create-user.component.scss']
 })
 export class CreateUserComponent implements OnInit {
+  err = {};
   email = new FormControl("jeremy@gmail.com", [Validators.required, Validators.email]);
   name = new FormControl("", Validators.required);
   job = new FormControl("", Validators.required);
@@ -73,7 +74,7 @@ export class CreateUserComponent implements OnInit {
       this.response.registerId = x.id;
       this.response.token = x.token;
     }, (err) => {
-      console.log(err);
+      this.err = err;
       this._snackBar.open(`${err.status}: ${err.error.error}`, 'close');
     });
   }

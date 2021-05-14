@@ -8,8 +8,11 @@ import { CreateUserResponse } from '../models/create-user';
 import { ApiService } from '../services/api/api.service';
 import { RegisterResponse } from '../models/register';
 import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CreateUserComponent', () => {
+  let httpClient: HttpClient;
   let component: CreateUserComponent;
   let fixture: ComponentFixture<CreateUserComponent>;
   let service: ApiService;
@@ -18,12 +21,13 @@ describe('CreateUserComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ CreateUserComponent ],
-      imports: [HttpClientTestingModule, MatSnackBarModule]
+      imports: [HttpClientTestingModule, MatSnackBarModule, BrowserAnimationsModule]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
+    httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(CreateUserComponent);
     service = TestBed.inject(ApiService);
@@ -124,6 +128,13 @@ describe('CreateUserComponent', () => {
   });
 
   it('handles an error', () => {
+    const e = {
+      status: 500,
+      error: {
+        error: 'REGISTER TEST ERROR'
+      }
+    };
+
     spyOn(service, 'createUser').and.returnValue(new Observable<CreateUserResponse>((x) => {
       return x.next({
         name: 'test user',
@@ -134,21 +145,14 @@ describe('CreateUserComponent', () => {
     }));
 
     spyOn(service, 'register').and.returnValue(new Observable<RegisterResponse>((x) => {
-      return x.error();
+      return x.error(e);
     }));
 
-    
-    const mockErrorResponse = { status: 400, statusText: 'Bad Request' };
-    const data = 'Invalid request parameters';
-    
     component.create();
 
-    var request = httpTestingController.expectOne(`${environment.reqres}/api/register`);
-    request.flush(data, mockErrorResponse);
-    
     expect(service.register).toHaveBeenCalled();
+    expect(component.err).toEqual(e);
 
-    httpTestingController.verify();
   });
 
 });
