@@ -1,0 +1,9 @@
+<p id="currencyOutput">{{ num | currency }}</p>
+<p appHighlight >{{ num | currency:'CAD' }}</p>
+<p>{{ int | currency:'CAD' }}</p>
+<p class="date-wrapper">Date ({{ getType(date) }}):  {{ date | date:'dddd, MMMM d, y, h:mm:ss a' }}</p>
+<p>Date Num ({{ getType(dateNum) }}):  {{ dateNum | date:'EEEE, MMMM d, y, h:mm:ss a' }}</p>
+<p >Date String ({{ getType(dateStr) }}): {{ dateStr | date:'EEEE, MMMM d, y, h:mm:ss a' | alternateCaps }} </p>
+
+<p>Obj: {{ obj | json }}</p>
+<pre>{{ obj | json }}</pre>
